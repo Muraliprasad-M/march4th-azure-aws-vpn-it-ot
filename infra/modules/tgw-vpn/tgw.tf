@@ -5,7 +5,7 @@ resource "aws_ec2_transit_gateway" "this" {
   amazon_side_asn                    = var.tgw_asn
   default_route_table_association    = var.tgw_default_route_table_association
   default_route_table_propagation    = var.tgw_default_route_table_propagation
-  vpn_ecmp_support                   = "enable"
+  vpn_ecmp_support                   = "disable"
   dns_support                        = "enable"
 
   tags = merge(local.common_tags, {

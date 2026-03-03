@@ -5,7 +5,7 @@ domain     = "IT"
 
 # Use existing IT TGW
 create_tgw      = false
-existing_tgw_id = "tgw-xxxxxxxxxxxxxxxxx" # TODO: replace with actual IT TGW ID
+existing_tgw_id = "tgw-0197ed40c5a15e3dd" # TODO: replace with actual IT TGW ID
 
 # IT VPC and three TGW attachment private subnets (one per AZ)
 # Names from request for reference:

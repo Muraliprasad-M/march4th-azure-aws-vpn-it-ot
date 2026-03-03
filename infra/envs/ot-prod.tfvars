@@ -5,7 +5,7 @@ domain     = "OT"
 
 # Use existing OT TGW
 create_tgw      = false
-existing_tgw_id = "tgw-xxxxxxxxxxxxxxxxx" # TODO: replace with actual OT TGW ID
+existing_tgw_id = "tgw-046432679404c0c8e" # TODO: replace with actual OT TGW ID
 
 vpc_id         = "vpc-0abcde123456789ab" # TODO: replace with real OT VPC ID
 tgw_subnet_ids = [
