@@ -25,57 +25,22 @@ variables:
   - name: AWS_DEFAULT_REGION
     value: 'eu-west-2'
 
+resources:
+  repositories:
+    - repository: templates
+      type: git
+      name: YourProject/pipeline-templates  # Update with your actual project/repo name
+
 stages:
+# ==========================================
+# VALIDATION STAGE
+# ==========================================
 - stage: Validate
-  displayName: 'Terraform Validate'
+  displayName: 'Code Validation'
   jobs:
-  - job: LintAndValidate
-    displayName: 'Lint and validate'
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - checkout: self
-
-    - script: |
-        set -e
-        echo "Installing Terraform $(TF_VERSION)"
-        curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
-        sudo unzip -o terraform.zip -d /usr/local/bin
-        terraform version
-
-        echo "Installing tflint $(TFLINT_VERSION)"
-        curl -fsSL -o tflint.zip https://github.com/terraform-linters/tflint/releases/download/v$(TFLINT_VERSION)/tflint_linux_amd64.zip
-        sudo unzip -o tflint.zip -d /usr/local/bin
-        tflint --version
-      displayName: 'Install Terraform and TFLint'
-
-    - script: |
-        set -e
-        cd $(WORKING_DIR)
-        terraform fmt -check -recursive
-        export TFLINT_PLUGIN_AWS_REGION="${AWS_DEFAULT_REGION}"
-        tflint --init
-        tflint -f sarif -o $(Build.ArtifactStagingDirectory)/tflint.sarif .
-      displayName: 'Terraform fmt & TFLint'
-
-    - script: |
-        set -e
-        cd $(WORKING_DIR)
-        terraform init \
-          -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
-          -backend-config="key=$(TF_BACKEND_KEY)" \
-          -backend-config="region=$(AWS_DEFAULT_REGION)" \
-          -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
-          -input=false
-        terraform validate
-      displayName: 'Terraform init & validate'
-
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: '$(Build.ArtifactStagingDirectory)/tflint.sarif'
-        artifactName: 'lint'
-        publishLocation: 'Container'
-      displayName: 'Publish lint artifacts'
+    - job: CodeValidation
+      steps:
+        - template: stages/code-validation-stage.yml@templates
 
 - stage: Plan
   displayName: 'Terraform Plan (OT & IT)'
