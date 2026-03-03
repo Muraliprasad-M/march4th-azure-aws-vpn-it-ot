@@ -20,8 +20,8 @@ tgw_subnet_ids = [
 tgw_asn = 64512
 
 # IT uses a separate Azure VPN Gateway (single-IP active-standby unless you add a 2nd IP)
-cgw_public_ips = ["203.0.113.10"] # TODO: replace with IT Azure VPN GW public IP
-cgw_bgp_asn    = 65515
+cgw_public_ips = ["52.169.226.10"] # TODO: replace with IT Azure VPN GW public IP
+cgw_bgp_asn    = 2009
 
 # tags
 tags = {

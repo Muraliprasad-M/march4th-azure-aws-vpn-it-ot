@@ -14,11 +14,11 @@ tgw_subnet_ids = [
   "subnet-0ccc3333ccc3333cc"  # OT private TGW subnet AZ3
 ]
 
-tgw_asn = 64512
+tgw_asn = 64513
 
 # OT Azure VNG public IP(s) – single-IP active-standby
-cgw_public_ips = ["52.12.34.56"] # TODO: replace with OT Azure VPN GW public IP
-cgw_bgp_asn    = 65515
+cgw_public_ips = ["52.169.226.10"] # TODO: replace with OT Azure VPN GW public IP
+cgw_bgp_asn    = 2009
 
 # tags
 tags = {
