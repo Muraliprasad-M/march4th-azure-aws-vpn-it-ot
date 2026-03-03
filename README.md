@@ -32,6 +32,11 @@ terraform apply
 
 ## Notes
 - Both **OT and IT TGWs** must already exist - provide their IDs in `terraform.tfvars`
+- **IMPORTANT**: Disable ECMP on existing TGWs to prevent load balancing across VPN tunnels:
+  ```bash
+  aws ec2 modify-transit-gateway --transit-gateway-id tgw-0197ed40c5a15e3dd --options VpnEcmpSupport=disable --region eu-west-2  # IT TGW
+  aws ec2 modify-transit-gateway --transit-gateway-id tgw-046432679404c0c8e --options VpnEcmpSupport=disable --region eu-west-2  # OT TGW
+  ```
 - Each domain uses its own VPC with 3 TGW attachment subnets (one per AZ)
 - Each domain can use **single-IP** or **active-active** Azure gateways by setting one or two IPs in `*_cgw_public_ips`
 - If you set `vpn_tunnel_psk`, mirror it in Azure. Otherwise, AWS generates PSKs; read them from outputs after apply
