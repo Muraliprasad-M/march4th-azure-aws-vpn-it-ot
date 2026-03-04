@@ -1,23 +1,40 @@
+
 trigger:
   branches:
     include:
-      - '*'
+      - main
+
+variables:
+  - name: TF_VERSION
+    value: '1.14.5'
+  - name: TFLINT_VERSION
+    value: '0.53.0'
+  - name: WORKING_DIR
+    value: 'infra'
+  # Backend settings
+  - name: TF_BACKEND_BUCKET
+    value: 'st-network-prod-euw2-tfstate-eyqwgt'
+  - name: TF_BACKEND_KEY
+    value: 'core-network/terraform.tfstate'
+  - name: TF_BACKEND_DDB_TABLE
+    value: 'st-network-prod-euw2-tfstate-lock'
+  - name: AWS_SERVICE_CONNECTION
+    value: 'aws-core-network'
+  - name: ROLE_ARN
+    value: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+  - name: AWS_DEFAULT_REGION
+    value: 'eu-west-2'
 
 resources:
   repositories:
     - repository: templates
       type: git
-      name: pipeline-templates
-      ref: refs/tags/v1.1.1
-
-pool:
-    vmImage: ubuntu-latest
+      name: YourProject/pipeline-templates  # Update with your actual project/repo name
 
 stages:
 # ==========================================
 # VALIDATION STAGE
 # ==========================================
-
 - stage: Validate
   displayName: 'Code Validation'
   jobs:
@@ -28,7 +45,6 @@ stages:
 # ==========================================
 # TERRAFORM PLAN STAGE
 # ==========================================
-
 - stage: Plan
   displayName: 'Terraform Plan'
   dependsOn: Validate
@@ -47,7 +63,6 @@ stages:
 # ==========================================
 # TERRAFORM APPLY STAGE
 # ==========================================
-
 - stage: Apply
   displayName: 'Terraform Apply'
   dependsOn: Plan

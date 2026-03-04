@@ -31,5 +31,5 @@ it_cgw_public_ips = ["52.169.226.10"]
 cgw_bgp_asn = 2009
 
 tags = {
-  project = "s2s"
+  project = "network core"
 }
