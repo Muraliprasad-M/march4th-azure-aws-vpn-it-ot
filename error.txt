@@ -1,1 +1,18 @@
 1st error
+
+│ after its single argument definition.
+╵
+
+╷
+│ Error: Invalid single-argument block definition
+│ 
+│   on modules/tgw-vpn/variables.tf line 10, in variable "existing_tgw_id":
+│   10: variable "existing_tgw_id" { type = string default = null }
+│ 
+│ A single-line block definition must end with a closing brace immediately
+│ after its single argument definition.
+╵
+
+
+##[error]Bash exited with code '2'.
+
