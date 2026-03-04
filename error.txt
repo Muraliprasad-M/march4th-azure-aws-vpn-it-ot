@@ -16,3 +16,18 @@
 
 ##[error]Bash exited with code '2'.
 
+
+/usr/bin/bash --noprofile --norc /home/vsts/work/_temp/69a294db-07cf-45e7-84eb-77f98c090af1.sh
+╷
+│ Error: Invalid single-argument block definition
+│ 
+│   on variables.tf line 3, in variable "env":
+│    3: variable "env"        { type = string  default = "prod" }
+│ 
+│ A single-line block definition must end with a closing brace immediately
+│ after its single argument definition.
+╵
+
+
+##[error]Bash exited with code '2'.
+
