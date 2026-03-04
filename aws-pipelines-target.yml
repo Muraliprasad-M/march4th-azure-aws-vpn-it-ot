@@ -24,6 +24,8 @@ stages:
     - job: CodeValidation
       steps:
         - template: stages/code-validation-stage.yml@templates
+          parameters:
+            workingDirectory: 'infra'
 
 # ==========================================
 # TERRAFORM PLAN STAGE
@@ -38,6 +40,7 @@ stages:
       steps:
         - template: stages/terraform-plan-stage.yml@templates
           parameters:
+            workingDirectory: 'infra'
             tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
             tfStateKey: 'core-network/terraform.tfstate'
             tfStateLock: 'st-network-prod-euw2-tfstate-lock'
@@ -63,6 +66,7 @@ stages:
               - checkout: self
               - template: stages/terraform-apply-stage.yml@templates
                 parameters:
+                  workingDirectory: 'infra'
                   tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
                   tfStateKey: 'core-network/terraform.tfstate'
                   tfStateLock: 'st-network-prod-euw2-tfstate-lock'
