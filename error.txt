@@ -316,3 +316,22 @@ Copy
 json
 This is required for Terraform to access the S3 backend and create VPN resources.
 
+8th error
+
+
+│ 
+│ This module is not yet installed. Run "terraform init" to install all
+│ modules required by this configuration.
+╵
+╷
+│ Error: Module not installed
+│ 
+│   on main.tf line 36:
+│   36: module "it_vpn" {
+│ 
+│ This module is not yet installed. Run "terraform init" to install all
+│ modules required by this configuration.
+╵
+
+##[error]Error: The process '/usr/bin/bash' failed with exit code 1
+
