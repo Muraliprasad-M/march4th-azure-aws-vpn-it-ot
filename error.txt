@@ -72,3 +72,25 @@ terraform.tfvars
 variables.tf
 
 ##[error]Bash exited with code '3'
+
+
+Error 6
+
+
+│ operation error ec2imds: GetMetadata, failed to get API token, operation
+│ error ec2imds: getToken, http response error StatusCode: 400, request to
+│ EC2 IMDS failed
+│ 
+╵
+╷
+│ Error: Missing required provider
+│ 
+│ This configuration requires provider registry.terraform.io/hashicorp/aws,
+│ but that provider isn't available. You may be able to install it
+│ automatically by running:
+│   terraform init
+╵
+
+##[error]Bash exited with code '1'.
+Finishing: Terraform Validate
+
