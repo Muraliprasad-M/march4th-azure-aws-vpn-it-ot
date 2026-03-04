@@ -49,3 +49,14 @@
 ##[error]Bash exited with code '2'.
 Finishing: Terraform Format Check
 
+4th error
+
+usr/bin/bash --noprofile --norc /home/vsts/work/_temp/31ddaf83-e924-453f-aec0-a02998ee4157.sh
+envs/it-prod.tfvars
+envs/ot-prod.tfvars
+modules/tgw-vpn/outputs.tf
+modules/tgw-vpn/tgw.tf
+modules/tgw-vpn/variables.tf
+modules/tgw-vpn/vpn.tf
+terraform.tfvars
+
