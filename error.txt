@@ -348,3 +348,13 @@ Job TerraformPlan: Step input awsCredentials references service connection aws-c
 Job ApplyDeployment: Environment ManualApply could not be found. The environment does not exist or has not been authorized for use.
 
 Job ApplyDeployment: Step input awsCredentials references service connection aws-core-network which could not be found. The service connection does not exist, has been disabled or has not been authorized for use. For authorization details, refer to https://aka.ms/yamlauthz.
+
+11th error 
+aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/outputs.tf
+aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/tgw.tf
+aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/variables.tf
+aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/vpn.tf
+aws-core-network-azure-to-aws-vpn-v1.0/infra/terraform.tfvars
+aws-core-network-azure-to-aws-vpn-v1.0/infra/variables.tf
+
+##[error]Bash exited with code '3
