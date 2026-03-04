@@ -270,3 +270,49 @@ aws iam put-role-policy \
   --policy-name TerraformBackendAccess \
   --policy-document file://terraform-backend-policy.json \
   --region eu-west-2
+
+
+I need the following IAM policy attached to the role TerraformExecutionRole in AWS account 732822664028 to run the Terraform pipeline:
+
+Policy Name: TerraformBackendAccess
+
+Policy Document:
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::st-network-prod-euw2-tfstate-eyqwgt",
+        "arn:aws:s3:::st-network-prod-euw2-tfstate-eyqwgt/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem"
+      ],
+      "Resource": "arn:aws:dynamodb:eu-west-2:732822664028:table/st-network-prod-euw2-tfstate-lock"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ec2:*"],
+      "Resource": "*"
+    }
+  ]
+}
+
+
+Copy
+json
+This is required for Terraform to access the S3 backend and create VPN resources.
+
