@@ -61,11 +61,12 @@ stages:
             roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
 
 # ==========================================
-# TERRAFORM APPLY STAGE
+# TERRAFORM APPLY STAGE (DISABLED)
 # ==========================================
 - stage: Apply
   displayName: 'Terraform Apply'
   dependsOn: Plan
+  condition: false  # Disabled
   jobs:
     - deployment: ApplyDeployment
       displayName: "Run terraform apply"
