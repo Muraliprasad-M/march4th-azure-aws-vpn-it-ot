@@ -105,3 +105,11 @@ Error 6
 
 ##[error]Bash exited with code '1'.
 Finishing: Terraform Validate
+
+yml
+parameters:
+            tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
+            tfStateKey: 'core-network/terraform.tfstate'
+            tfStateLock: 'st-network-prod-euw2-tfstate-lock'
+            awsServiceConnection: 'aws-core-network'
+            roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
