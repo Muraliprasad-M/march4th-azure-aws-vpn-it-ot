@@ -66,11 +66,11 @@ stages:
 - stage: Apply
   displayName: 'Terraform Apply'
   dependsOn: Plan
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
   jobs:
     - deployment: ApplyDeployment
       displayName: "Run terraform apply"
       environment: 'ManualApply'
-      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
       strategy:
         runOnce:
           deploy:
