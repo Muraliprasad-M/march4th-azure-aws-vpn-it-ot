@@ -61,3 +61,14 @@ terraform.tfvars
 variables.tf
 
 ##[error]Bash exited with code '3'.
+
+5th error 
+/usr/bin/bash --noprofile --norc /home/vsts/work/_temp/72ee817c-4ac1-4111-996c-5ac08bda3efd.sh
+modules/tgw-vpn/outputs.tf
+modules/tgw-vpn/tgw.tf
+modules/tgw-vpn/variables.tf
+modules/tgw-vpn/vpn.tf
+terraform.tfvars
+variables.tf
+
+##[error]Bash exited with code '3'
