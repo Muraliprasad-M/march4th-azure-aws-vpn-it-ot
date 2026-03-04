@@ -11,7 +11,6 @@ variables:
     value: '0.53.0'
   - name: WORKING_DIR
     value: 'infra'
-  # Backend settings
   - name: TF_BACKEND_BUCKET
     value: 'st-network-prod-euw2-tfstate-eyqwgt'
   - name: TF_BACKEND_KEY
@@ -25,61 +24,127 @@ variables:
   - name: AWS_DEFAULT_REGION
     value: 'eu-west-2'
 
-resources:
-  repositories:
-    - repository: templates
-      type: git
-      name: YourProject/pipeline-templates  # Update with your actual project/repo name
-
 stages:
-# ==========================================
-# VALIDATION STAGE
-# ==========================================
 - stage: Validate
   displayName: 'Code Validation'
   jobs:
     - job: CodeValidation
+      displayName: 'Validate Terraform'
+      pool:
+        vmImage: 'ubuntu-latest'
       steps:
-        - template: stages/code-validation-stage.yml@templates
+        - checkout: self
+        
+        - script: |
+            curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+            sudo unzip -o terraform.zip -d /usr/local/bin
+            terraform version
+          displayName: 'Install Terraform'
+        
+        - script: |
+            cd $(WORKING_DIR)
+            terraform fmt -check -recursive
+          displayName: 'Terraform Format Check'
+        
+        - script: |
+            cd $(WORKING_DIR)
+            terraform init \
+              -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
+              -backend-config="key=$(TF_BACKEND_KEY)" \
+              -backend-config="region=$(AWS_DEFAULT_REGION)" \
+              -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
+              -input=false
+            terraform validate
+          displayName: 'Terraform Validate'
 
-# ==========================================
-# TERRAFORM PLAN STAGE
-# ==========================================
 - stage: Plan
   displayName: 'Terraform Plan'
   dependsOn: Validate
   condition: succeeded()
   jobs:
     - job: TerraformPlan
+      displayName: 'Plan Infrastructure'
+      pool:
+        vmImage: 'ubuntu-latest'
       steps:
-        - template: stages/terraform-plan-stage.yml@templates
-          parameters:
-            tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
-            tfStateKey: 'core-network/terraform.tfstate'
-            tfStateLock: 'st-network-prod-euw2-tfstate-lock'
-            awsServiceConnection: 'aws-core-network'
-            roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+        - checkout: self
+        
+        - script: |
+            curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+            sudo unzip -o terraform.zip -d /usr/local/bin
+            terraform version
+          displayName: 'Install Terraform'
+        
+        - script: |
+            cd $(WORKING_DIR)
+            terraform init \
+              -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
+              -backend-config="key=$(TF_BACKEND_KEY)" \
+              -backend-config="region=$(AWS_DEFAULT_REGION)" \
+              -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
+              -input=false
+            
+            terraform plan \
+              -out="$(Build.ArtifactStagingDirectory)/plan.tfplan" \
+              -input=false
+            
+            terraform show -no-color "$(Build.ArtifactStagingDirectory)/plan.tfplan" > "$(Build.ArtifactStagingDirectory)/plan.txt"
+          displayName: 'Terraform Plan'
+        
+        - task: PublishBuildArtifacts@1
+          inputs:
+            pathToPublish: '$(Build.ArtifactStagingDirectory)'
+            artifactName: 'terraform-plan'
+            publishLocation: 'Container'
+          displayName: 'Publish Plan Artifacts'
 
-# ==========================================
-# TERRAFORM APPLY STAGE
-# ==========================================
 - stage: Apply
   displayName: 'Terraform Apply'
   dependsOn: Plan
   condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
   jobs:
     - deployment: ApplyDeployment
-      displayName: "Run terraform apply"
+      displayName: 'Apply Infrastructure'
       environment: 'ManualApply'
+      pool:
+        vmImage: 'ubuntu-latest'
       strategy:
         runOnce:
           deploy:
             steps:
               - checkout: self
-              - template: stages/terraform-apply-stage.yml@templates
-                parameters:
-                  tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
-                  tfStateKey: 'core-network/terraform.tfstate'
-                  tfStateLock: 'st-network-prod-euw2-tfstate-lock'
-                  awsServiceConnection: 'aws-core-network'
-                  roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+              
+              - task: DownloadBuildArtifacts@1
+                inputs:
+                  buildType: 'current'
+                  downloadType: 'single'
+                  artifactName: 'terraform-plan'
+                  downloadPath: '$(Pipeline.Workspace)'
+                displayName: 'Download Plan Artifact'
+              
+              - script: |
+                  curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+                  sudo unzip -o terraform.zip -d /usr/local/bin
+                  terraform version
+                displayName: 'Install Terraform'
+              
+              - script: |
+                  cd $(WORKING_DIR)
+                  terraform init \
+                    -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
+                    -backend-config="key=$(TF_BACKEND_KEY)" \
+                    -backend-config="region=$(AWS_DEFAULT_REGION)" \
+                    -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
+                    -input=false
+                  
+                  terraform apply -input=false "$(Pipeline.Workspace)/terraform-plan/plan.tfplan"
+                  
+                  terraform output -json > "$(Build.ArtifactStagingDirectory)/terraform-outputs.json"
+                displayName: 'Terraform Apply'
+              
+              - task: PublishBuildArtifacts@1
+                inputs:
+                  pathToPublish: '$(Build.ArtifactStagingDirectory)'
+                  artifactName: 'terraform-outputs'
+                  publishLocation: 'Container'
+                displayName: 'Publish Outputs'
