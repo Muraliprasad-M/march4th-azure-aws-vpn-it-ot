@@ -334,4 +334,6 @@ This is required for Terraform to access the S3 backend and create VPN resources
 ╵
 
 ##[error]Error: The process '/usr/bin/bash' failed with exit code 1
-
+9th error
+TF200016: The following project does not exist: YourProject. Verify that the name of the project is correct and that the project exists on the specified Azure DevOps Server.
+59458
