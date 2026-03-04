@@ -337,3 +337,14 @@ This is required for Terraform to access the S3 backend and create VPN resources
 9th error
 TF200016: The following project does not exist: YourProject. Verify that the name of the project is correct and that the project exists on the specified Azure DevOps Server.
 59458
+
+10th error
+
+Validate and commit azure-pipelines.yml to the repository.
+
+Errors detected
+Job TerraformPlan: Step input awsCredentials references service connection aws-core-network which could not be found. The service connection does not exist, has been disabled or has not been authorized for use. For authorization details, refer to https://aka.ms/yamlauthz.
+
+Job ApplyDeployment: Environment ManualApply could not be found. The environment does not exist or has not been authorized for use.
+
+Job ApplyDeployment: Step input awsCredentials references service connection aws-core-network which could not be found. The service connection does not exist, has been disabled or has not been authorized for use. For authorization details, refer to https://aka.ms/yamlauthz.
