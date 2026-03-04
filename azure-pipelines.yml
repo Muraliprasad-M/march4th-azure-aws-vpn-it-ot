@@ -35,26 +35,26 @@ stages:
       steps:
         - checkout: self
         
-        - script: |
-            curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
-            sudo unzip -o terraform.zip -d /usr/local/bin
-            terraform version
-          displayName: 'Install Terraform'
-        
-        - script: |
-            cd $(WORKING_DIR)
-            terraform fmt -check -recursive || true
-          displayName: 'Terraform Format Check'
-        
-        - script: |
-            cd $(WORKING_DIR)
-            terraform init \
-              -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
-              -backend-config="key=$(TF_BACKEND_KEY)" \
-              -backend-config="region=$(AWS_DEFAULT_REGION)" \
-              -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
-              -input=false
-            terraform validate
+        - task: AWSShellScript@1
+          inputs:
+            awsCredentials: '$(AWS_SERVICE_CONNECTION)'
+            regionName: '$(AWS_DEFAULT_REGION)'
+            scriptType: 'inline'
+            inlineScript: |
+              curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+              sudo unzip -o terraform.zip -d /usr/local/bin
+              terraform version
+              
+              cd $(WORKING_DIR)
+              terraform fmt -check -recursive || true
+              
+              terraform init \
+                -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
+                -backend-config="key=$(TF_BACKEND_KEY)" \
+                -backend-config="region=$(AWS_DEFAULT_REGION)" \
+                -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
+                -input=false
+              terraform validate
           displayName: 'Terraform Validate'
 
 - stage: Plan
@@ -69,26 +69,29 @@ stages:
       steps:
         - checkout: self
         
-        - script: |
-            curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
-            sudo unzip -o terraform.zip -d /usr/local/bin
-            terraform version
-          displayName: 'Install Terraform'
-        
-        - script: |
-            cd $(WORKING_DIR)
-            terraform init \
-              -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
-              -backend-config="key=$(TF_BACKEND_KEY)" \
-              -backend-config="region=$(AWS_DEFAULT_REGION)" \
-              -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
-              -input=false
-            
-            terraform plan \
-              -out="$(Build.ArtifactStagingDirectory)/plan.tfplan" \
-              -input=false
-            
-            terraform show -no-color "$(Build.ArtifactStagingDirectory)/plan.tfplan" > "$(Build.ArtifactStagingDirectory)/plan.txt"
+        - task: AWSShellScript@1
+          inputs:
+            awsCredentials: '$(AWS_SERVICE_CONNECTION)'
+            regionName: '$(AWS_DEFAULT_REGION)'
+            scriptType: 'inline'
+            inlineScript: |
+              curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+              sudo unzip -o terraform.zip -d /usr/local/bin
+              terraform version
+              
+              cd $(WORKING_DIR)
+              terraform init \
+                -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
+                -backend-config="key=$(TF_BACKEND_KEY)" \
+                -backend-config="region=$(AWS_DEFAULT_REGION)" \
+                -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
+                -input=false
+              
+              terraform plan \
+                -out="$(Build.ArtifactStagingDirectory)/plan.tfplan" \
+                -input=false
+              
+              terraform show -no-color "$(Build.ArtifactStagingDirectory)/plan.tfplan" > "$(Build.ArtifactStagingDirectory)/plan.txt"
           displayName: 'Terraform Plan'
         
         - task: PublishBuildArtifacts@1
@@ -122,24 +125,27 @@ stages:
                   downloadPath: '$(Pipeline.Workspace)'
                 displayName: 'Download Plan Artifact'
               
-              - script: |
-                  curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
-                  sudo unzip -o terraform.zip -d /usr/local/bin
-                  terraform version
-                displayName: 'Install Terraform'
-              
-              - script: |
-                  cd $(WORKING_DIR)
-                  terraform init \
-                    -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
-                    -backend-config="key=$(TF_BACKEND_KEY)" \
-                    -backend-config="region=$(AWS_DEFAULT_REGION)" \
-                    -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
-                    -input=false
-                  
-                  terraform apply -input=false "$(Pipeline.Workspace)/terraform-plan/plan.tfplan"
-                  
-                  terraform output -json > "$(Build.ArtifactStagingDirectory)/terraform-outputs.json"
+              - task: AWSShellScript@1
+                inputs:
+                  awsCredentials: '$(AWS_SERVICE_CONNECTION)'
+                  regionName: '$(AWS_DEFAULT_REGION)'
+                  scriptType: 'inline'
+                  inlineScript: |
+                    curl -fsSL -o terraform.zip https://releases.hashicorp.com/terraform/$(TF_VERSION)/terraform_$(TF_VERSION)_linux_amd64.zip
+                    sudo unzip -o terraform.zip -d /usr/local/bin
+                    terraform version
+                    
+                    cd $(WORKING_DIR)
+                    terraform init \
+                      -backend-config="bucket=$(TF_BACKEND_BUCKET)" \
+                      -backend-config="key=$(TF_BACKEND_KEY)" \
+                      -backend-config="region=$(AWS_DEFAULT_REGION)" \
+                      -backend-config="dynamodb_table=$(TF_BACKEND_DDB_TABLE)" \
+                      -input=false
+                    
+                    terraform apply -input=false "$(Pipeline.Workspace)/terraform-plan/plan.tfplan"
+                    
+                    terraform output -json > "$(Build.ArtifactStagingDirectory)/terraform-outputs.json"
                 displayName: 'Terraform Apply'
               
               - task: PublishBuildArtifacts@1
