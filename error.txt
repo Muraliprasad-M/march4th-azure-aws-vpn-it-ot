@@ -113,3 +113,14 @@ parameters:
             tfStateLock: 'st-network-prod-euw2-tfstate-lock'
             awsServiceConnection: 'aws-core-network'
             roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+
+
+---
+
+
+7th error
+
+
+Either service connection with ID c16d4e61-5c81-4f47-bbed-0cf73b09156b doesn't exist or you do not have permission on it.
+
+for the service connection "aws-core-network"
