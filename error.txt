@@ -77,6 +77,18 @@ variables.tf
 Error 6
 
 
+╷
+│ Warning: Deprecated Parameter
+│ 
+│   on versions.tf line 12, in terraform:
+│   12:   backend "s3" {}
+│ 
+│ The parameter "dynamodb_table" is deprecated. Use parameter "use_lockfile"
+│ instead.
+╵
+╷
+│ Error: No valid credential sources found
+
 │ operation error ec2imds: GetMetadata, failed to get API token, operation
 │ error ec2imds: getToken, http response error StatusCode: 400, request to
 │ EC2 IMDS failed
@@ -93,4 +105,3 @@ Error 6
 
 ##[error]Bash exited with code '1'.
 Finishing: Terraform Validate
-
