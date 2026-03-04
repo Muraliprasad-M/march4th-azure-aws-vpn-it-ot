@@ -124,3 +124,75 @@ parameters:
 Either service connection with ID c16d4e61-5c81-4f47-bbed-0cf73b09156b doesn't exist or you do not have permission on it.
 
 for the service connection "aws-core-network"
+jeff gave the permission
+
+2026-03-04T13:57:31.2855700Z ##[section]Starting: Terraform Validate
+2026-03-04T13:57:31.2869038Z ==============================================================================
+2026-03-04T13:57:31.2869341Z Task         : AWS Shell Script
+2026-03-04T13:57:31.2869543Z Description  : Run a shell script using Bash with AWS credentials as environment variables
+2026-03-04T13:57:31.2869818Z Version      : 1.24.0
+2026-03-04T13:57:31.2870228Z Author       : Amazon Web Services
+2026-03-04T13:57:31.2870447Z Help         : Runs a shell script in Bash, setting AWS credentials and region information into the shell environment using the standard environment keys _AWS_ACCESS_KEY_ID_, _AWS_SECRET_ACCESS_KEY_, _AWS_SESSION_TOKEN_ and _AWS_REGION_.
+
+More information on this task can be found in the [task reference](https://docs.aws.amazon.com/vsts/latest/userguide/awsshell.html).
+
+####Task Permissions
+Permissions for this task to call AWS service APIs depend on the activities in the supplied script.
+2026-03-04T13:57:31.2871318Z ==============================================================================
+2026-03-04T13:57:32.0177153Z Configuring credentials for task
+2026-03-04T13:57:32.0185333Z ...configuring AWS credentials from service endpoint 'c16d4e61-5c81-4f47-bbed-0cf73b09156b'
+2026-03-04T13:57:32.0186887Z Skipping Instance profile, we have OIDC enabled
+2026-03-04T13:57:32.0194581Z ...configuring AWS credentials from service endpoint 'c16d4e61-5c81-4f47-bbed-0cf73b09156b'
+2026-03-04T13:57:32.0197881Z Getting OIDC Token...
+2026-03-04T13:57:32.3940814Z OIDC Token generated: issuer: {https://vstoken.dev.azure.com/fcfc07a8-194a-4d5c-b486-c840879822ce} sub: {sc://severntrent/aws/aws-core-network}, aud: {api://AzureADTokenExchange}
+2026-03-04T13:57:32.3944235Z Configuring region for task
+2026-03-04T13:57:32.3945807Z ...configured to use region eu-west-2, defined in task.
+2026-03-04T13:57:32.3966090Z Assuming role via OIDC Token...
+2026-03-04T13:57:33.1555728Z ...role assumed via OIDC Token: arn:aws:sts::624337930029:assumed-role/st-azdo-federation-core-network-role/aws-vsts-tools
+2026-03-04T13:57:33.1557720Z Configuring region for task
+2026-03-04T13:57:33.1558914Z ...configured to use region eu-west-2, defined in task.
+2026-03-04T13:57:33.1576326Z [command]/usr/bin/bash /home/vsts/work/_temp/awsshellscript_2046.sh
+2026-03-04T13:57:33.3526453Z Archive:  terraform.zip
+2026-03-04T13:57:33.3531314Z   inflating: /usr/local/bin/LICENSE.txt  
+2026-03-04T13:57:34.1681908Z   inflating: /usr/local/bin/terraform  
+2026-03-04T13:57:34.3621413Z Terraform v1.14.5
+2026-03-04T13:57:34.3630676Z on linux_amd64
+2026-03-04T13:57:34.3630848Z 
+2026-03-04T13:57:34.3631250Z Your version of Terraform is out of date! The latest version
+2026-03-04T13:57:34.3631672Z is 1.14.6. You can update by downloading from https://developer.hashicorp.com/terraform/install
+2026-03-04T13:57:34.4092197Z modules/tgw-vpn/outputs.tf
+2026-03-04T13:57:34.4095747Z modules/tgw-vpn/tgw.tf
+2026-03-04T13:57:34.4096108Z modules/tgw-vpn/variables.tf
+2026-03-04T13:57:34.4096574Z modules/tgw-vpn/vpn.tf
+2026-03-04T13:57:34.4096960Z terraform.tfvars
+2026-03-04T13:57:34.4097236Z variables.tf
+2026-03-04T13:57:34.4673049Z [0m[1mInitializing the backend...[0m
+2026-03-04T13:57:34.5514416Z [0m[32m
+2026-03-04T13:57:34.5514893Z Successfully configured the backend "s3"! Terraform will automatically
+2026-03-04T13:57:34.5522379Z use this backend unless the backend configuration changes.[0m
+2026-03-04T13:57:34.5768198Z [31m╷[0m[0m
+2026-03-04T13:57:34.5770276Z [31m│[0m [0m[1m[31mError: [0m[0m[1mError refreshing state: Unable to access object "core-network/terraform.tfstate" in S3 bucket "st-network-prod-euw2-tfstate-eyqwgt": operation error S3: HeadObject, https response error StatusCode: 403, RequestID: SPSVWNAB11CVZYQ7, HostID: LVWzIxizmcuQCsyzA+XkuwUHF/z59+0PKP94UlPE0jmO7ZA5cxK6vTkSQSi8IbFBFXyx3YTa5Tu4VXEAPn4kCgswgwzqoJTh, api error Forbidden: Forbidden[0m
+2026-03-04T13:57:34.5771486Z [31m│[0m [0m
+2026-03-04T13:57:34.5772209Z [31m│[0m [0m[0m
+2026-03-04T13:57:34.5772812Z [31m╵[0m[0m
+2026-03-04T13:57:34.6032440Z [31m╷[0m[0m
+2026-03-04T13:57:34.6036295Z [31m│[0m [0m[1m[31mError: [0m[0m[1mModule not installed[0m
+2026-03-04T13:57:34.6036982Z [31m│[0m [0m
+2026-03-04T13:57:34.6037615Z [31m│[0m [0m[0m  on main.tf line 7:
+2026-03-04T13:57:34.6040264Z [31m│[0m [0m   7: [4mmodule "ot_vpn"[0m {[0m
+2026-03-04T13:57:34.6041946Z [31m│[0m [0m
+2026-03-04T13:57:34.6042360Z [31m│[0m [0mThis module is not yet installed. Run "terraform init" to install all
+2026-03-04T13:57:34.6042787Z [31m│[0m [0mmodules required by this configuration.
+2026-03-04T13:57:34.6043140Z [31m╵[0m[0m
+2026-03-04T13:57:34.6043442Z [31m╷[0m[0m
+2026-03-04T13:57:34.6043805Z [31m│[0m [0m[1m[31mError: [0m[0m[1mModule not installed[0m
+2026-03-04T13:57:34.6044121Z [31m│[0m [0m
+2026-03-04T13:57:34.6044444Z [31m│[0m [0m[0m  on main.tf line 36:
+2026-03-04T13:57:34.6044789Z [31m│[0m [0m  36: [4mmodule "it_vpn"[0m {[0m
+2026-03-04T13:57:34.6045079Z [31m│[0m [0m
+2026-03-04T13:57:34.6045477Z [31m│[0m [0mThis module is not yet installed. Run "terraform init" to install all
+2026-03-04T13:57:34.6046008Z [31m│[0m [0mmodules required by this configuration.
+2026-03-04T13:57:34.6046314Z [31m╵[0m[0m
+2026-03-04T13:57:34.6074213Z 
+2026-03-04T13:57:34.6128512Z ##[error]Error: The process '/usr/bin/bash' failed with exit code 1
+2026-03-04T13:57:34.6274397Z ##[section]Finishing: Terraform Validate
