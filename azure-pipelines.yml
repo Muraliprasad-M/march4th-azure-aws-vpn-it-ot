@@ -29,7 +29,8 @@ resources:
   repositories:
     - repository: templates
       type: git
-      name: YourProject/pipeline-templates  # Update with your actual project/repo name
+      name: pipeline-templates
+      ref: refs/tags/v1.1.1
 
 stages:
 # ==========================================
