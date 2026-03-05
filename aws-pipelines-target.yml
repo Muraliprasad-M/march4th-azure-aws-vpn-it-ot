@@ -24,6 +24,16 @@ stages:
     - job: CodeValidation
       steps:
         - template: stages/code-validation-stage.yml@templates
+          parameters:
+            tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
+            tfStateKey: 'core-network/terraform.tfstate'
+            tfStateLock: 'st-network-prod-euw2-tfstate-lock'
+        - bash: |
+            cd infra
+            terraform fmt -check -recursive
+            terraform validate
+          displayName: 'Validate Terraform in infra/'
+          workingDirectory: '$(System.DefaultWorkingDirectory)'
 
 # ==========================================
 # TERRAFORM PLAN STAGE
@@ -36,13 +46,30 @@ stages:
   jobs:
     - job: TerraformPlan
       steps:
-        - template: stages/terraform-plan-stage.yml@templates
+        - checkout: self
+        - template: functions/git-auth.yml@templates
+        - template: functions/terraform-install.yml@templates
           parameters:
-            tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
-            tfStateKey: 'core-network/terraform.tfstate'
-            tfStateLock: 'st-network-prod-euw2-tfstate-lock'
+            terraformVersion: '1.14.5'
+        - template: functions/awscli-install.yml@templates
+        - template: functions/assume-role.yml@templates
+          parameters:
             awsServiceConnection: 'aws-core-network'
             roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+        - bash: |
+            terraform init -input=false -reconfigure \
+              -backend-config="bucket=st-network-prod-euw2-tfstate-eyqwgt" \
+              -backend-config="key=core-network/terraform.tfstate" \
+              -backend-config="dynamodb_table=st-network-prod-euw2-tfstate-lock"
+            terraform plan -out=tfplan
+          displayName: 'Terraform Plan'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/infra'
+          env:
+            AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+            AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+            AWS_SESSION_TOKEN: $(AWS_SESSION_TOKEN)
+            AWS_DEFAULT_REGION: eu-west-2
+            AWS_REGION: eu-west-2
 
 # ==========================================
 # TERRAFORM APPLY STAGE
@@ -61,13 +88,29 @@ stages:
           deploy:
             steps:
               - checkout: self
-              - template: stages/terraform-apply-stage.yml@templates
+              - template: functions/git-auth.yml@templates
+              - template: functions/terraform-install.yml@templates
                 parameters:
-                  tfStateBucket: 'st-network-prod-euw2-tfstate-eyqwgt'
-                  tfStateKey: 'core-network/terraform.tfstate'
-                  tfStateLock: 'st-network-prod-euw2-tfstate-lock'
+                  terraformVersion: '1.14.5'
+              - template: functions/awscli-install.yml@templates
+              - template: functions/assume-role.yml@templates
+                parameters:
                   awsServiceConnection: 'aws-core-network'
                   roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+              - bash: |
+                  terraform init -input=false -reconfigure \
+                    -backend-config="bucket=st-network-prod-euw2-tfstate-eyqwgt" \
+                    -backend-config="key=core-network/terraform.tfstate" \
+                    -backend-config="dynamodb_table=st-network-prod-euw2-tfstate-lock"
+                  terraform apply -auto-approve
+                displayName: 'Terraform Apply'
+                workingDirectory: '$(System.DefaultWorkingDirectory)/infra'
+                env:
+                  AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+                  AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+                  AWS_SESSION_TOKEN: $(AWS_SESSION_TOKEN)
+                  AWS_DEFAULT_REGION: eu-west-2
+                  AWS_REGION: eu-west-2
 
 
 
