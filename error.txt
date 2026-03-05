@@ -362,3 +362,15 @@ aws-core-network-azure-to-aws-vpn-v1.0/infra/variables.tf
 12th error
 /aws-pipelines-target.yml (Line: 28, Col: 31): Unexpected parameter 'workingDirectory'
 59463
+13th error
+2026-03-05T01:09:37.1413305Z [command]/usr/bin/bash /home/vsts/work/_temp/946a16f4-99b4-4607-8b4a-d065ad0fbed4.sh
+2026-03-05T01:09:37.1469354Z Running terraform format...
+2026-03-05T01:09:37.1760644Z aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/outputs.tf
+2026-03-05T01:09:37.1763914Z aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/tgw.tf
+2026-03-05T01:09:37.1764338Z aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/variables.tf
+2026-03-05T01:09:37.1764690Z aws-core-network-azure-to-aws-vpn-v1.0/infra/modules/tgw-vpn/vpn.tf
+2026-03-05T01:09:37.1765265Z aws-core-network-azure-to-aws-vpn-v1.0/infra/terraform.tfvars
+2026-03-05T01:09:37.1766134Z aws-core-network-azure-to-aws-vpn-v1.0/infra/variables.tf
+2026-03-05T01:09:37.1808943Z 
+2026-03-05T01:09:37.1845702Z ##[error]Bash exited with code '3'.
+2026-03-05T01:09:37.1883480Z ##[section]Finishing: Terraform Format
