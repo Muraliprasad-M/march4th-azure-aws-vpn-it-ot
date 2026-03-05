@@ -72,45 +72,45 @@ stages:
             AWS_REGION: eu-west-2
 
 # ==========================================
-# TERRAFORM APPLY STAGE
+# TERRAFORM APPLY STAGE (DISABLED)
 # ==========================================
 
-- stage: Apply
-  displayName: 'Terraform Apply'
-  dependsOn: Plan
-  jobs:
-    - deployment: ApplyDeployment
-      displayName: "Run terraform apply"
-      environment: 'ManualApply'
-      condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
-      strategy:
-        runOnce:
-          deploy:
-            steps:
-              - checkout: self
-              - template: functions/git-auth.yml@templates
-              - template: functions/terraform-install.yml@templates
-                parameters:
-                  terraformVersion: '1.14.5'
-              - template: functions/awscli-install.yml@templates
-              - template: functions/assume-role.yml@templates
-                parameters:
-                  awsServiceConnection: 'aws-core-network'
-                  roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
-              - bash: |
-                  terraform init -input=false -reconfigure \
-                    -backend-config="bucket=st-network-prod-euw2-tfstate-eyqwgt" \
-                    -backend-config="key=core-network/terraform.tfstate" \
-                    -backend-config="dynamodb_table=st-network-prod-euw2-tfstate-lock"
-                  terraform apply -auto-approve
-                displayName: 'Terraform Apply'
-                workingDirectory: '$(System.DefaultWorkingDirectory)/infra'
-                env:
-                  AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
-                  AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
-                  AWS_SESSION_TOKEN: $(AWS_SESSION_TOKEN)
-                  AWS_DEFAULT_REGION: eu-west-2
-                  AWS_REGION: eu-west-2
+# - stage: Apply
+#   displayName: 'Terraform Apply'
+#   dependsOn: Plan
+#   jobs:
+#     - deployment: ApplyDeployment
+#       displayName: "Run terraform apply"
+#       environment: 'ManualApply'
+#       condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'main'))
+#       strategy:
+#         runOnce:
+#           deploy:
+#             steps:
+#               - checkout: self
+#               - template: functions/git-auth.yml@templates
+#               - template: functions/terraform-install.yml@templates
+#                 parameters:
+#                   terraformVersion: '1.14.5'
+#               - template: functions/awscli-install.yml@templates
+#               - template: functions/assume-role.yml@templates
+#                 parameters:
+#                   awsServiceConnection: 'aws-core-network'
+#                   roleArn: 'arn:aws:iam::732822664028:role/TerraformExecutionRole'
+#               - bash: |
+#                   terraform init -input=false -reconfigure \
+#                     -backend-config="bucket=st-network-prod-euw2-tfstate-eyqwgt" \
+#                     -backend-config="key=core-network/terraform.tfstate" \
+#                     -backend-config="dynamodb_table=st-network-prod-euw2-tfstate-lock"
+#                   terraform apply -auto-approve
+#                 displayName: 'Terraform Apply'
+#                 workingDirectory: '$(System.DefaultWorkingDirectory)/infra'
+#                 env:
+#                   AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY_ID)
+#                   AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_ACCESS_KEY)
+#                   AWS_SESSION_TOKEN: $(AWS_SESSION_TOKEN)
+#                   AWS_DEFAULT_REGION: eu-west-2
+#                   AWS_REGION: eu-west-2
 
 
 
